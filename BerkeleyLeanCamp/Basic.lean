@@ -1,5 +1,9 @@
 import Mathlib
 
+open Topology Set
+
+noncomputable section
+
 def ZeroDimModel : Type := (Fin 0 → ℝ)
     deriving TopologicalSpace, Unique, Subsingleton
 
@@ -49,11 +53,35 @@ theorem zero_dim_manifold_countable : Countable M := by
 end
 
 section
+
 variable {M : Type} [TopologicalSpace M] [DiscreteTopology M] [Countable M]
 
-def zero_dim_guy : ChartedSpace ZeroDimModel M := {
-  atlas := Set.univ
-  chartAt :=  sorry
-  mem_chart_source := sorry
-  chart_mem_atlas := sorry
-}
+open PUnit
+
+def zeroDimMfd : ChartedSpace ZeroDimModel M :=
+{ atlas       := Set.univ,
+  chartAt     := λ x ↦
+  { toFun              := λ _ ↦ (default : ZeroDimModel),
+    invFun             := λ _ ↦ x,
+    source             := {x},
+    target             := Set.univ,
+    continuousOn_toFun := by
+      simp,
+    continuousOn_invFun := by
+      exact continuousOn_const,
+    left_inv'          := by
+      intro y hy; rcases hy with rfl; rfl,
+    right_inv'         := by
+      intro u hu; simpa using Subsingleton.elim (default : ZeroDimModel) u,
+    open_source        := isOpen_discrete _,
+    open_target        := isOpen_univ,
+    map_source'        := by
+      intro y hy; simp,
+    map_target'        := by
+      intro u hu; simp  },
+  mem_chart_source := by
+    intro x; simp,
+  chart_mem_atlas := by
+    intro x; simp }
+
+end
