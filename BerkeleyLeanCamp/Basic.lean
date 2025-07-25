@@ -3,7 +3,9 @@ import Mathlib
 def ZeroDimModel : Type := (Fin 0 → ℝ)
     deriving TopologicalSpace, Unique, Subsingleton
 
-variable {M : Type} [TopologicalSpace M]  [ChartedSpace ZeroDimModel M]
+section
+
+variable {M : Type} [TopologicalSpace M] [ChartedSpace ZeroDimModel M]
 
 lemma exists_chart_at (x : M) : ∃ (U : Set M) (_ : U ≃ₜ ZeroDimModel),
   IsOpen U ∧ x ∈ U := by
@@ -26,7 +28,6 @@ lemma exists_chart_at (x : M) : ∃ (U : Set M) (_ : U ≃ₜ ZeroDimModel),
     · exact ChartedSpace.mem_chart_source x
   · exact φ
 
-
 theorem zero_dim_manifold_discrete : DiscreteTopology M := by
   rw [← singletons_open_iff_discrete]
   intro a
@@ -44,3 +45,15 @@ variable [SecondCountableTopology M]
 theorem zero_dim_manifold_countable : Countable M := by
   have h : DiscreteTopology M := zero_dim_manifold_discrete
   exact countable_of_Lindelof_of_discrete
+
+end
+
+section
+variable {M : Type} [TopologicalSpace M] [DiscreteTopology M] [Countable M]
+
+def zero_dim_guy : ChartedSpace ZeroDimModel M := {
+  atlas := Set.univ
+  chartAt :=  sorry
+  mem_chart_source := sorry
+  chart_mem_atlas := sorry
+}
